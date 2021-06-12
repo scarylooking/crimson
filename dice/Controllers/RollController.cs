@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dice.Hubs;
 using Dice.Models;
+using Dice.Services;
+using Dice.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
@@ -16,34 +18,22 @@ namespace Dice.Controllers
     public class RollController : Controller
     {
         private readonly IHubContext<MessageHub> _messageHub;
-        private readonly Random _rnd;
+        private readonly IDiceRollService _diceRollService;
 
-        public RollController([NotNull] IHubContext<MessageHub> messageHub)
+        public RollController([NotNull] IHubContext<MessageHub> messageHub, IDiceRollService diceRollService)
         {
             _messageHub = messageHub;
-            _rnd = new Random();
+            _diceRollService = diceRollService;
         }
-     
+
         [HttpPost]
         public async Task<IActionResult> Roll(MessagePost message)
         {
-            var rolls = DoRoll(message.NumberOfDice, message.NumberOfFaces);
-
-            await _messageHub.Clients.All.SendAsync("sendToReact", $"x rolled: {string.Join(',', rolls)}");
+            var rolls = _diceRollService.Roll(message.NumberOfDice, message.NumberOfFaces);
+            
+            await _messageHub.Clients.All.SendAsync("sendToReact", $"x rolled: {string.Join(',', rolls.OrderByDescending(x => x))}");
 
             return Ok();
-        }
-
-        private IEnumerable<int> DoRoll(int die, int faces)
-        {
-            var rolls = new List<int>();
-
-            for (var i =0; i < die; i++)
-            {
-                rolls.Add(_rnd.Next(1, faces + 1));
-            }
-
-            return rolls.OrderByDescending(x => x).ToArray();
         }
     }
 }

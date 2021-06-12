@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dice.Hubs;
+using Dice.Services;
+using Dice.Services.Interfaces;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace Dice
@@ -41,6 +43,9 @@ namespace Dice
             });
 
             services.AddSignalR();
+
+            services.AddSingleton<IRandomNumberService, RandomNumberService>();
+            services.AddTransient<IDiceRollService, DiceRollService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
