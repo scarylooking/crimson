@@ -11,44 +11,63 @@ const App: React.FC = () => {
 
   hubConnection.start();
 
-  var list: string[] = [];
+  var list: Array<RollResponse> = [];
 
   interface MessageProps {
     HubConnection: signalR.HubConnection;
+  }
+
+  interface RollResponse {
+    name: string,
+    roll: Array<number>
   }
 
   const Messages: React.FC<MessageProps> = (messageProps) => {
     const [date, setDate] = useState<Date>();
 
     useEffect(() => {
-      messageProps.HubConnection.on("sendToReact", (message) => {
-        list.push(message);
+      messageProps.HubConnection.on("sendNewDiceRoll", (response) => {
+
+        list.push(JSON.parse(response));
+
+        while (list.length > 10) {
+          var item = list.shift();
+          console.debug('Evicting an item from the list', item);
+        }
+
         setDate(new Date());
       });
     }, []);
 
     return (
       <>
-        {list.map((message, index) => (
-          <p key={`message${index}`}>{message}</p>
+        {list.map((item, index) => (
+          <p key={`message${index}`}>{item.name} rolled {item.roll.sort((n1,n2) => n2 - n1).join(', ')}</p>
         ))}
       </>
     );
   };
 
   const SendMessage: React.FC = () => {
-    const [numberOfDice, setNumberOfDice] = useState("1");
-    const [numberOfFaces, setNumberOfFaces] = useState("6");
+    const [dieCount, setDieCount] = useState("4");
+    const [faceCount, setFaceCount] = useState("10");
+    const [name, setName] = useState("Al Paca");
 
-    const numberOfDiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const dieCountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event && event.target) {
-        setNumberOfDice(event.target.value);
+        setDieCount(event.target.value);
       }
     };
 
-    const numberOfFacesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const faceCountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event && event.target) {
-        setNumberOfFaces(event.target.value);
+        setFaceCount(event.target.value);
+      }
+    };
+
+    const nameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event && event.target) {
+        setName(event.target.value);
       }
     };
 
@@ -61,8 +80,9 @@ const App: React.FC = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            "numberOfDice": numberOfDice,
-            "numberOfFaces": numberOfFaces
+            "name": name,
+            "dieCount": dieCount,
+            "faceCount": faceCount
           }),
         });
       }
@@ -70,11 +90,14 @@ const App: React.FC = () => {
 
     return (
       <>
+        <label>name</label>
+        <input type="text" required onChange={nameChange} value={name} />
+
         <label>dice</label>
-        <input type="number" onChange={numberOfDiceChange} value={numberOfDice} />
+        <input type="number" required onChange={dieCountChange} value={dieCount} />
 
         <label>faces</label>
-        <input type="number" onChange={numberOfFacesChange} value={numberOfFaces} />
+        <input type="number" required onChange={faceCountChange} value={faceCount} />
 
         <button onClick={messageSubmit}>Add Message</button>
       </>

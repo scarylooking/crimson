@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Dice.Hubs;
 using Dice.Models;
@@ -27,11 +28,17 @@ namespace Dice.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Roll(MessagePost message)
+        public async Task<IActionResult> Roll(RollRequest request)
         {
-            var rolls = _diceRollService.Roll(message.NumberOfDice, message.NumberOfFaces);
+            var rollResult = _diceRollService.Roll(request.DieCount, request.FaceCount);
+
+            var response = new RollResponse
+            {
+                Name = request.Name,
+                Roll = rollResult.ToArray()
+            };
             
-            await _messageHub.Clients.All.SendAsync("sendToReact", $"x rolled: {string.Join(',', rolls.OrderByDescending(x => x))}");
+            await _messageHub.Clients.All.SendAsync("sendNewDiceRoll", JsonSerializer.Serialize(response));
 
             return Ok();
         }
