@@ -67,7 +67,7 @@ namespace Dice
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<MessageHub>("/message");
+                endpoints.MapHub<DiceRollHub>("/diceRolls");
             });
 
             app.UseSpa(spa =>

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Dice.Hubs
 {
-    public class MessageHub : Hub
+    public class DiceRollHub : Hub
     {
     }
 }

@@ -18,10 +18,10 @@ namespace Dice.Controllers
     [ApiController]
     public class RollController : Controller
     {
-        private readonly IHubContext<MessageHub> _messageHub;
+        private readonly IHubContext<DiceRollHub> _messageHub;
         private readonly IDiceRollService _diceRollService;
 
-        public RollController([NotNull] IHubContext<MessageHub> messageHub, IDiceRollService diceRollService)
+        public RollController([NotNull] IHubContext<DiceRollHub> messageHub, IDiceRollService diceRollService)
         {
             _messageHub = messageHub;
             _diceRollService = diceRollService;
