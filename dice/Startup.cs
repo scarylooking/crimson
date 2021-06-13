@@ -39,7 +39,7 @@ namespace Dice
 
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "clientapp/build";
+                configuration.RootPath = "ClientApp/build";
             });
 
             services.AddSignalR();
@@ -59,6 +59,8 @@ namespace Dice
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseRouting();
 
@@ -72,7 +74,7 @@ namespace Dice
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "clientapp";
+                spa.Options.SourcePath = "ClientApp";
                 if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");

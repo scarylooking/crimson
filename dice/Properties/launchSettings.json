@@ -12,16 +12,13 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "clientapp",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "dice": {
       "commandName": "Project",
-      "dotnetRunMessages": "true",
       "launchBrowser": true,
-      "launchUrl": "clientapp",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
