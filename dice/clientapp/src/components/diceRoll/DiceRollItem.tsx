@@ -1,20 +1,17 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from "react";
+import { DiceRollResponse } from "../Interfaces/DiceRollResponse";
 
-interface MessageProps {
-  HubConnection: signalR.HubConnection;
+interface DiceRollItemProps {
+  roll: DiceRollResponse;
 }
 
-interface RollItem {
-  index: number,
-  name: string,
-  roll: Array<number>
-}
-
-
-const DiceRollItem: FC<RollItem> = ({name, roll, index}) => {
+const DiceRollItem = ({roll}:DiceRollItemProps) => {
   return (
     <>
-        <p key={index}>{name} rolled {roll.sort((n1, n2) => n2 - n1).join(', ')}</p>
+      <p>
+        {roll.name} rolled {roll.die}D{roll.faces}:{" "}
+        {roll.roll.sort((n1, n2) => n2 - n1).join(", ")}
+      </p>
     </>
   );
 };

@@ -1,27 +1,23 @@
 import React, { FC, useState, useEffect } from 'react';
 import DiceRollItem from "./DiceRollItem"
+import { DiceRollResponse }  from '../Interfaces/DiceRollResponse'
 
-interface MessageProps {
-  HubConnection: signalR.HubConnection;
+interface DiceRollListProps {
+  connection: signalR.HubConnection;
 }
 
-interface RollResponse {
-  name: string,
-  roll: Array<number>
-}
+const list: Array<DiceRollResponse> = [];
 
-const list: Array<RollResponse> = [];
-
-const DiceRollList: FC<MessageProps> = (messageProps) => {
+const DiceRollList = ({connection}:DiceRollListProps) => {
   const [date, setDate] = useState<Date>();
 
   useEffect(() => {
-    messageProps.HubConnection.on("sendNewDiceRoll", (response) => {
+    connection.on("newRoll", (response) => {
 
-      list.push(JSON.parse(response));
+      list.unshift(JSON.parse(response));
 
       while (list.length > 10) {
-        var item = list.shift();
+        var item = list.pop();
         console.debug('Evicting an item from the list', item);
       }
 
@@ -31,8 +27,8 @@ const DiceRollList: FC<MessageProps> = (messageProps) => {
 
   return (
     <>
-      {list.map((item, index) => (
-        <DiceRollItem name={item.name} roll={item.roll} index={index}></DiceRollItem>
+      {list.map((item:DiceRollResponse) => (
+        <DiceRollItem key={item.id} roll={item} ></DiceRollItem>
       ))}
     </>
   );

@@ -3,17 +3,27 @@ import * as signalR from "@microsoft/signalr";
 import DiceRollForm from "./DiceRollForm";
 import DiceRollList from "./DiceRollList";
 
-const DiceRoll: FC = () => {
+const DiceRoll = () => {
+
+  const startSuccess = () => {
+    console.log("CONNECTED!")
+  }
+
+  const startFailed = () => {
+    console.log("FAILED!")
+  }
+
   const hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl("/diceRolls")
+  .configureLogging(signalR.LogLevel.Trace)
+    .withUrl("/hubs/dice")
     .build();
 
-  hubConnection.start();
+  hubConnection.start().then(startSuccess, startFailed);
 
   return (
     <>
-      <DiceRollForm />
-      <DiceRollList HubConnection={hubConnection}></DiceRollList>
+      <DiceRollForm connection={hubConnection} />
+      <DiceRollList connection={hubConnection}></DiceRollList>
     </>
   );
 };
