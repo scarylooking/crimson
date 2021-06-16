@@ -12,7 +12,7 @@ const DiceRollList = ({connection}:DiceRollListProps) => {
   const [date, setDate] = useState<Date>();
 
   useEffect(() => {
-    connection.on("newRoll", (response) => {
+    connection.on("diceRoll", (response) => {
 
       list.unshift(JSON.parse(response));
 

@@ -16,6 +16,7 @@ const DiceRoll = () => {
   const hubConnection = new signalR.HubConnectionBuilder()
   .configureLogging(signalR.LogLevel.Trace)
     .withUrl("/hubs/dice")
+    .withAutomaticReconnect()
     .build();
 
   hubConnection.start().then(startSuccess, startFailed);
