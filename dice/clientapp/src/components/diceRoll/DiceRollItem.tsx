@@ -5,13 +5,15 @@ interface DiceRollItemProps {
   roll: DiceRollResponse;
 }
 
-const DiceRollItem = ({roll}:DiceRollItemProps) => {
+const DiceRollItem = ({ roll }: DiceRollItemProps) => {
   return (
     <>
-      <p>
-        {roll.name} rolled {roll.die}D{roll.faces}:{" "}
-        {roll.roll.sort((n1, n2) => n2 - n1).join(", ")}
-      </p>
+      <tr>
+        <th scope="row">{roll.id.substr(roll.id.length - 5).toUpperCase()}</th>
+        <td>{roll.name}</td>
+        <td>{roll.die}D{roll.faces}</td>
+        <td>{roll.roll.sort((n1, n2) => n2 - n1).join(", ")}</td>
+      </tr>
     </>
   );
 };
