@@ -38,7 +38,7 @@ const DiceRollList = ({ connection }: DiceRollListProps) => {
         </thead>
         <tbody>
           {list.map((item: DiceRollResponse) => (
-            <DiceRollItem key={item.id} roll={item} ></DiceRollItem>
+            <DiceRollItem isFirst={item.id == list[0].id} key={item.id} roll={item} ></DiceRollItem>
           ))}
         </tbody>
       </table>

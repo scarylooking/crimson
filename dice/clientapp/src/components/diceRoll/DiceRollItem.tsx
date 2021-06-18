@@ -4,9 +4,10 @@ import styles from './DiceRollItem.module.css';
 
 interface DiceRollItemProps {
   roll: DiceRollResponse;
+  isFirst: boolean;
 }
 
-const DiceRollItem = ({ roll }: DiceRollItemProps) => {
+const DiceRollItem = ({ roll, isFirst }: DiceRollItemProps) => {
 
   const GetBadgeType = (dieFaces:number, roll:number) => {
     if (roll === 1) {
@@ -22,7 +23,7 @@ const DiceRollItem = ({ roll }: DiceRollItemProps) => {
 
   return (
     <>
-      <tr>
+      <tr className={isFirst ? 'table-info' : ''}>
         <th scope="row">{roll.id.substr(roll.id.length - 5).toUpperCase()}</th>
         <td>{roll.name}</td>
         <td>

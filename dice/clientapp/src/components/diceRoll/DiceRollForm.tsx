@@ -4,18 +4,15 @@ interface DiceRollFormProps {
   connection: signalR.HubConnection;
 }
 
-interface State {
-  value: number
-  isValid: boolean
-  wasTouched?: boolean
+interface State<T> {
+  value: T;
+  isValid: boolean;
+  wasTouched?: boolean;
 }
 
-type Action =
- | { type: 'USER_INPUT', value: number }
- | { type: 'INPUT_BLUR' }
+type Action<T> = { type: "USER_INPUT"; value: T } | { type: "INPUT_BLUR" };
 
-
-const diceFaceValueReducer = (state: State, action: Action): State => {
+const diceFaceValueReducer = (state: State<number>, action: Action<number>): State<number> => {
   if (action.type === "USER_INPUT") {
     return { value: action.value, isValid: action.value >= 1 && action.value <= 100, wasTouched: true };
   }
@@ -27,14 +24,28 @@ const diceFaceValueReducer = (state: State, action: Action): State => {
   return { value: 6, isValid: false, wasTouched: true };
 };
 
+const stringValueReducer = (state: State<string>, action: Action<string>): State<string> => {
+  if (action.type === "USER_INPUT") {
+    return { value: action.value, isValid: action.value.trim().length >= 1, wasTouched: true };
+  }
+
+  if (action.type === "INPUT_BLUR") {
+    return { value: state.value, isValid: state.value.trim().length >= 1, wasTouched: true };
+  }
+
+  return { value: "", isValid: false, wasTouched: true };
+};
+
 const DiceRollForm = ({ connection }: DiceRollFormProps) => {
   const [rollIsValid, setRollIsValid] = useState(false);
 
   const [dieCountState, dispatchDieCount] = useReducer(diceFaceValueReducer, { value: 1, isValid: true, wasTouched: false });
   const [faceCountState, dispatchFaceCount] = useReducer(diceFaceValueReducer, { value: 6, isValid: true, wasTouched: false });
+  const [nameState, dispatchName] = useReducer(stringValueReducer, { value: "", isValid: false, wasTouched: false });
 
   const { isValid: dieCountIsValid } = dieCountState;
   const { isValid: faceCountIsValid } = faceCountState;
+  const { isValid: nameIsValid } = nameState;
 
   const dieCountChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatchDieCount({ type: "USER_INPUT", value: +event.target.value });
@@ -52,27 +63,52 @@ const DiceRollForm = ({ connection }: DiceRollFormProps) => {
     dispatchFaceCount({ type: "INPUT_BLUR" });
   };
 
+  const nameChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatchName({ type: "USER_INPUT", value: event.target.value });
+  };
+
+  const nameBlurHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatchName({ type: "INPUT_BLUR" });
+  };
+
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    connection.send("roll", "al paca", dieCountState.value, faceCountState.value);
+    connection.send("roll", nameState.value, dieCountState.value, faceCountState.value);
   };
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
-      setRollIsValid(dieCountIsValid && faceCountIsValid);
+      setRollIsValid(dieCountIsValid && faceCountIsValid && nameIsValid);
     }, 100);
 
     return () => {
       clearTimeout(debounceTimer);
     };
-  }, [dieCountIsValid, faceCountIsValid]);
+  }, [dieCountIsValid, faceCountIsValid, nameIsValid]);
 
   return (
     <>
-      <form onSubmit={submitHandler} noValidate>
+      <form onSubmit={submitHandler} noValidate className="needs-validation">
         <div className="form-row align-items-center">
-          <div className="col-auto">
+          <div className="col-md-4">
+            <label className="sr-only" htmlFor="name">
+              Name
+            </label>
+            <div className="input-group mb-2">
+              <input
+                type="text"
+                id="name"
+                value={nameState.value}
+                onChange={nameChangeHandler}
+                onBlur={nameBlurHandler}
+                className={`form-control ${nameState.wasTouched ? (nameState.isValid === false ? "is-invalid" : "is-valid") : "is-invalid"}`}
+                placeholder="Al Paca"
+              />
+            </div>
+          </div>
+
+          <div className="col-3">
             <label className="sr-only" htmlFor="dieCount">
               Number of Dice
             </label>
@@ -86,7 +122,7 @@ const DiceRollForm = ({ connection }: DiceRollFormProps) => {
                 value={dieCountState.value}
                 onChange={dieCountChangeHandler}
                 onBlur={dieCountBlurHandler}
-                className={`form-control ${dieCountState.wasTouched ? (dieCountState.isValid === false ? "is-invalid" : "is-valid") : ""}`}
+                className={`form-control ${dieCountState.wasTouched ? (dieCountState.isValid === false ? "is-invalid" : "is-valid") : "is-valid"}`}
               />
               <div className="input-group-append">
                 <div className="input-group-text">x</div>
@@ -94,7 +130,7 @@ const DiceRollForm = ({ connection }: DiceRollFormProps) => {
             </div>
           </div>
 
-          <div className="col-auto">
+          <div className="col-3">
             <label className="sr-only" htmlFor="faceCount">
               Number of Faces
             </label>
@@ -111,13 +147,13 @@ const DiceRollForm = ({ connection }: DiceRollFormProps) => {
                 value={faceCountState.value}
                 onChange={faceCountChangeHandler}
                 onBlur={faceCountBlurHandler}
-                className={`form-control ${faceCountState.wasTouched ? (faceCountState.isValid === false ? "is-invalid" : "is-valid") : ""}`}
+                className={`form-control ${faceCountState.wasTouched ? (faceCountState.isValid === false ? "is-invalid" : "is-valid") : "is-valid"}`}
               />
             </div>
           </div>
 
-          <div className="col-auto">
-            <button type="submit" className="btn btn-primary mb-2" disabled={!rollIsValid}>
+          <div className="col-2">
+            <button type="submit" className="btn w-100 btn-primary mb-2" disabled={!rollIsValid}>
               Roll
             </button>
           </div>
