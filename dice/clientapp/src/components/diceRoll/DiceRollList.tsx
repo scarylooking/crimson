@@ -33,7 +33,7 @@ const DiceRollList = ({ connection }: DiceRollListProps) => {
             <th scope="col">#</th>
             <th scope="col">Player</th>
             <th scope="col">Die</th>
-            <th scope="col">Roll</th>
+            <th scope="col" className="w-50">Roll</th>
           </tr>
         </thead>
         <tbody>
