@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect, useReducer } from "react";
 
 interface DiceRollFormProps {
   connection: signalR.HubConnection;
+  sessionId: string;
 }
 
 interface State<T> {
@@ -36,7 +37,7 @@ const stringValueReducer = (state: State<string>, action: Action<string>): State
   return { value: "", isValid: false, wasTouched: true };
 };
 
-const DiceRollForm = ({ connection }: DiceRollFormProps) => {
+const DiceRollForm = ({ connection, sessionId }: DiceRollFormProps) => {
   const [rollIsValid, setRollIsValid] = useState(false);
 
   const [dieCountState, dispatchDieCount] = useReducer(diceFaceValueReducer, { value: 1, isValid: true, wasTouched: false });
@@ -74,7 +75,7 @@ const DiceRollForm = ({ connection }: DiceRollFormProps) => {
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    connection.send("roll", nameState.value, dieCountState.value, faceCountState.value);
+    connection.send("roll",sessionId, nameState.value, dieCountState.value, faceCountState.value);
   };
 
   useEffect(() => {

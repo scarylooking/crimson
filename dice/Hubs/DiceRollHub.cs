@@ -29,16 +29,12 @@ namespace Dice.Hubs
             _diceRollService = diceRollService;
         }
 
-        public async Task JoinSession(string name, string sessionId)
+        public async Task JoinSession(string sessionId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, sessionId);
 
-            var response = new GroupJoinMessage
-            {
-                Name = name
-            };
 
-            await Clients.Group(sessionId).SendAsync("diceJoin", JsonSerializer.Serialize(response));
+            await Clients.Group(sessionId).SendAsync("diceJoin");
         }
 
         public async Task LeaveSession(string name, string sessionId)
@@ -53,7 +49,7 @@ namespace Dice.Hubs
             await Clients.Group(sessionId).SendAsync("diceJoin", JsonSerializer.Serialize(response));
         }
 
-        public async Task Roll(string name, int dieCount, int faceCount)
+        public async Task Roll(string sessionId, string name, int dieCount, int faceCount)
         {
             var rollResult = _diceRollService.Roll(dieCount, faceCount);
 
@@ -65,7 +61,7 @@ namespace Dice.Hubs
                 Faces = faceCount
             };
 
-            await Clients.All.SendAsync("diceRoll", JsonSerializer.Serialize(response));
+            await Clients.Group(sessionId).SendAsync("diceRoll", JsonSerializer.Serialize(response));
         }
     }
 }

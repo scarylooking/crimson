@@ -1,12 +1,25 @@
 import React, {FC} from "react";
+import { match } from "react-router-dom";
 import * as signalR from "@microsoft/signalr";
 import DiceRollForm from "./DiceRollForm";
 import DiceRollList from "./DiceRollList";
+import { connectAdvanced } from "react-redux";
 
-const DiceRoll = () => {
+interface DiceRollParams {
+  sessionId: string;
+}
+
+interface DiceRollProps {
+  required: string;
+  match: match<DiceRollParams>;
+}
+
+const DiceRoll = ({match}:DiceRollProps) => {
 
   const startSuccess = () => {
     console.log("CONNECTED!")
+
+    hubConnection.send("joinSession", match.params.sessionId)
   }
 
   const startFailed = () => {
@@ -23,7 +36,7 @@ const DiceRoll = () => {
 
   return (
     <>
-      <DiceRollForm connection={hubConnection} />
+      <DiceRollForm connection={hubConnection} sessionId={match.params.sessionId} />
       <DiceRollList connection={hubConnection}></DiceRollList>
     </>
   );
