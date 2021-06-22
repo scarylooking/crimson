@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DiceRollItem from "./DiceRollItem";
-import { DiceRollResponse } from "../Interfaces/DiceRollResponse";
+import { DiceRollResponse } from "../../Interfaces/DiceRollResponse";
 
 interface DiceRollListProps {
   connection: signalR.HubConnection;

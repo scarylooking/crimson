@@ -1,51 +1,18 @@
-import React, { FC, useState } from "react";
-import { DiceRollResponse } from "../Interfaces/DiceRollResponse";
-import styles from "./DiceRollItem.module.css";
+import React, { useEffect, useState } from "react";
+import { HubConnectionState } from "@microsoft/signalr";
 
 interface ConnectionStateItemProps {
-  connectionState: string;
+  connectionState: HubConnectionState;
 }
 
 const ConnectionState = ({ connectionState }: ConnectionStateItemProps) => {
-  const getAlertType = ():string => {
-    switch (connectionState) {
-      case "connected":
-        return "alert-success";
-        case "failed":
-          return "alert-danger";
-      case "disconnected":
-        return "alert-danger";
-      case "connecting":
-        return "alert-info";
-      case "reconnecting":
-        return "alert-warning";
-    }
-
-    return "alert-primary";
-  };
-
-  const getMessage = ():string => {
-    switch (connectionState) {
-      case "connected":
-        return "Connected to hub";
-        case "disconnected":
-          return "Connection to hub failed";
-      case "disconnected":
-        return "Disconnected from hub";
-      case "connecting":
-        return "Connecting to hub...";
-      case "reconnecting":
-        return "Reconnecting to hub...";
-    }
-
-    return "";
-  };
-
   return (
     <>
-      <div className={`alert ${getAlertType()}`} role="alert">
-        {getMessage()}
-      </div>
+      {connectionState === HubConnectionState.Connected && <div className="alert alert-success" role="alert">Connected to hub</div>}
+      {connectionState === HubConnectionState.Connecting && <div className="alert alert-success" role="alert">Connecting to hub&hellip;</div>}
+      {connectionState === HubConnectionState.Disconnecting && <div className="alert alert-danger" role="alert">Disconnecting from hub&hellip;</div>}
+      {connectionState === HubConnectionState.Disconnected && <div className="alert alert-danger" role="alert">Disconnected from hub</div>}
+      {connectionState === HubConnectionState.Reconnecting && <div className="alert alert-warning" role="alert">Reconnecting to hub&hellip;</div>}
     </>
   );
 };

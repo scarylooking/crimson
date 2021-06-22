@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { match } from "react-router-dom";
-import * as signalR from "@microsoft/signalr";
+import { HubConnectionBuilder, HubConnection, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import DiceRollForm from "./DiceRollForm";
 import DiceRollList from "./DiceRollList";
 import ConnectionState from "./ConnectionState";
@@ -17,44 +17,40 @@ interface DiceRollProps {
 const DiceRoll = ({ match }: DiceRollProps) => {
   const sessionId = match.params.sessionId;
 
-  const [connectionState, setConnectionState] = useState("connecting");
-  const [hubConnection, setHubConnection] = useState<signalR.HubConnection>();
+  const [hubConnection, setHubConnection] = useState<HubConnection>();
+  const [connectionState, setConnectionState] = useState<HubConnectionState>(HubConnectionState.Disconnected);
 
   useEffect(() => {
-    const connection = new signalR.HubConnectionBuilder()
-      .configureLogging(signalR.LogLevel.Trace)
+    const connection = new HubConnectionBuilder()
+      .configureLogging(LogLevel.Trace)
       .withUrl("/hubs/dice")
       .withAutomaticReconnect()
       .build();
 
     const startSuccess = () => {
-      setConnectionState("connected");
+      setConnectionState(c => HubConnectionState.Connected);
       joinSession();
     };
 
     const startFailed = () => {
-      setConnectionState("failed");
+      setConnectionState(c => HubConnectionState.Disconnected);
     };
 
     const joinSession = () => {
       connection.send("joinSession", sessionId);
     };
 
-    connection.onreconnecting(function () {
-      setConnectionState("reconnecting");
-    });
-
     connection.onreconnected(function () {
       joinSession();
-      setConnectionState("connected");
+      setConnectionState(c => HubConnectionState.Connected);
+    });
+
+    connection.onreconnecting(function () {
+      setConnectionState(c => HubConnectionState.Reconnecting);
     });
 
     connection.onclose(function () {
-      setConnectionState("disconnected");
-    });
-
-    connection.on("diceRoll", (response) => {
-      console.log("ROLL!!");
+      setConnectionState(c => HubConnectionState.Disconnected);
     });
 
     connection.start().then(startSuccess, startFailed);

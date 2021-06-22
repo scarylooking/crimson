@@ -1,4 +1,5 @@
-import React, { FC, useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer } from "react";
+import { HubConnectionState } from "@microsoft/signalr";
 
 interface DiceRollFormProps {
   connection: signalR.HubConnection;
@@ -74,8 +75,10 @@ const DiceRollForm = ({ connection, sessionId }: DiceRollFormProps) => {
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    connection.send("roll",sessionId, nameState.value, dieCountState.value, faceCountState.value);
+    
+    if (connection.state === HubConnectionState.Connected) {
+      connection.send("roll", sessionId, nameState.value, dieCountState.value, faceCountState.value);
+    }
   };
 
   useEffect(() => {

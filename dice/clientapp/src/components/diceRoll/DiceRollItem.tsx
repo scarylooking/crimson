@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { DiceRollResponse } from "../Interfaces/DiceRollResponse";
+import { DiceRollResponse } from "../../Interfaces/DiceRollResponse";
 import styles from './DiceRollItem.module.css'; 
 
 interface DiceRollItemProps {
