@@ -1,9 +1,9 @@
-import React, {FC} from "react";
+import React, { useState, useEffect } from "react";
 import { match } from "react-router-dom";
 import * as signalR from "@microsoft/signalr";
 import DiceRollForm from "./DiceRollForm";
 import DiceRollList from "./DiceRollList";
-import { connectAdvanced } from "react-redux";
+import ConnectionState from "./ConnectionState";
 
 interface DiceRollParams {
   sessionId: string;
@@ -14,30 +14,63 @@ interface DiceRollProps {
   match: match<DiceRollParams>;
 }
 
-const DiceRoll = ({match}:DiceRollProps) => {
+const DiceRoll = ({ match }: DiceRollProps) => {
+  const sessionId = match.params.sessionId;
 
-  const startSuccess = () => {
-    console.log("CONNECTED!")
+  const [connectionState, setConnectionState] = useState("connecting");
+  const [hubConnection, setHubConnection] = useState<signalR.HubConnection>();
 
-    hubConnection.send("joinSession", match.params.sessionId)
-  }
+  useEffect(() => {
+    const connection = new signalR.HubConnectionBuilder()
+      .configureLogging(signalR.LogLevel.Trace)
+      .withUrl("/hubs/dice")
+      .withAutomaticReconnect()
+      .build();
 
-  const startFailed = () => {
-    console.log("FAILED!")
-  }
+    const startSuccess = () => {
+      setConnectionState("connected");
+      joinSession();
+    };
 
-  const hubConnection = new signalR.HubConnectionBuilder()
-  .configureLogging(signalR.LogLevel.Trace)
-    .withUrl("/hubs/dice")
-    .withAutomaticReconnect()
-    .build();
+    const startFailed = () => {
+      setConnectionState("failed");
+    };
 
-  hubConnection.start().then(startSuccess, startFailed);
+    const joinSession = () => {
+      connection.send("joinSession", sessionId);
+    };
+
+    connection.onreconnecting(function () {
+      setConnectionState("reconnecting");
+    });
+
+    connection.onreconnected(function () {
+      joinSession();
+      setConnectionState("connected");
+    });
+
+    connection.onclose(function () {
+      setConnectionState("disconnected");
+    });
+
+    connection.on("diceRoll", (response) => {
+      console.log("ROLL!!");
+    });
+
+    connection.start().then(startSuccess, startFailed);
+
+    setHubConnection(connection);
+
+    return function cleanup() {
+      connection.stop();
+    };
+  }, []);
 
   return (
     <>
-      <DiceRollForm connection={hubConnection} sessionId={match.params.sessionId} />
-      <DiceRollList connection={hubConnection}></DiceRollList>
+      <ConnectionState connectionState={connectionState} />
+      {hubConnection && <DiceRollForm connection={hubConnection} sessionId={match.params.sessionId} />}
+      {hubConnection && <DiceRollList connection={hubConnection}></DiceRollList>}
     </>
   );
 };

@@ -1,27 +1,24 @@
-import React, { FC, useState, useEffect } from 'react';
-import DiceRollItem from "./DiceRollItem"
-import { DiceRollResponse } from '../Interfaces/DiceRollResponse'
+import React, { useState, useEffect } from "react";
+import DiceRollItem from "./DiceRollItem";
+import { DiceRollResponse } from "../Interfaces/DiceRollResponse";
 
 interface DiceRollListProps {
   connection: signalR.HubConnection;
 }
 
-const list: Array<DiceRollResponse> = [];
-
 const DiceRollList = ({ connection }: DiceRollListProps) => {
-  const [date, setDate] = useState<Date>();
+  const [itemList, setItemList] = useState<Array<DiceRollResponse>>([]);
 
   useEffect(() => {
     connection.on("diceRoll", (response) => {
+      setItemList((items) => {
+        while (items.length > 10) {
+          var item = items.pop();
+          console.debug("Evicting an item from the list", item);
+        }
 
-      list.unshift(JSON.parse(response));
-
-      while (list.length > 10) {
-        var item = list.pop();
-        console.debug('Evicting an item from the list', item);
-      }
-
-      setDate(new Date());
+        return [JSON.parse(response), ...items];
+      });
     });
   }, []);
 
@@ -33,12 +30,14 @@ const DiceRollList = ({ connection }: DiceRollListProps) => {
             <th scope="col">#</th>
             <th scope="col">Player</th>
             <th scope="col">Die</th>
-            <th scope="col" className="w-50">Roll</th>
+            <th scope="col" className="w-50">
+              Roll
+            </th>
           </tr>
         </thead>
         <tbody>
-          {list.map((item: DiceRollResponse) => (
-            <DiceRollItem isFirst={item.id == list[0].id} key={item.id} roll={item} ></DiceRollItem>
+          {itemList.map((item: DiceRollResponse) => (
+            <DiceRollItem isFirst={item.id == itemList[0].id} key={item.id} roll={item}></DiceRollItem>
           ))}
         </tbody>
       </table>
