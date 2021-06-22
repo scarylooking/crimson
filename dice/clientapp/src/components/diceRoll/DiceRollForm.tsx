@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { HubConnectionState } from "@microsoft/signalr";
+import { HubConnectionState, HubConnection } from "@microsoft/signalr";
 
 interface DiceRollFormProps {
-  connection: signalR.HubConnection;
+  connection: HubConnection;
   sessionId: string;
+  connectionState: HubConnectionState;
 }
 
 interface State<T> {
@@ -38,7 +39,7 @@ const stringValueReducer = (state: State<string>, action: Action<string>): State
   return { value: "", isValid: false, wasTouched: true };
 };
 
-const DiceRollForm = ({ connection, sessionId }: DiceRollFormProps) => {
+const DiceRollForm = ({ connection, sessionId, connectionState }: DiceRollFormProps) => {
   const [rollIsValid, setRollIsValid] = useState(false);
 
   const [dieCountState, dispatchDieCount] = useReducer(diceFaceValueReducer, { value: 1, isValid: true, wasTouched: false });
@@ -83,13 +84,13 @@ const DiceRollForm = ({ connection, sessionId }: DiceRollFormProps) => {
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
-      setRollIsValid(dieCountIsValid && faceCountIsValid && nameIsValid);
+      setRollIsValid(dieCountIsValid && faceCountIsValid && nameIsValid && connectionState == HubConnectionState.Connected);
     }, 100);
 
     return () => {
       clearTimeout(debounceTimer);
     };
-  }, [dieCountIsValid, faceCountIsValid, nameIsValid]);
+  }, [dieCountIsValid, faceCountIsValid, nameIsValid, connectionState]);
 
   return (
     <>

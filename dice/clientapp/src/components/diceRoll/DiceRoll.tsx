@@ -65,7 +65,7 @@ const DiceRoll = ({ match }: DiceRollProps) => {
   return (
     <>
       <ConnectionState connectionState={connectionState} />
-      {hubConnection && <DiceRollForm connection={hubConnection} sessionId={match.params.sessionId} />}
+      {hubConnection && <DiceRollForm connection={hubConnection} sessionId={sessionId} connectionState={connectionState} />}
       {hubConnection && <DiceRollList connection={hubConnection}></DiceRollList>}
     </>
   );
