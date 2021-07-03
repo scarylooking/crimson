@@ -1,0 +1,9 @@
+
+{
+    "region" : "eu-west-2",
+    "profile" : "Personal",
+    "configuration" : "Release",
+    "image-tag"     : "dice:latest",
+    "docker-build-working-dir" : "",
+    "vstoolkit-deployment-mode" : "PushOnly"
+}
