@@ -1,5 +1,5 @@
-import React, { useReducer, useEffect, useState } from "react";
-import { Redirect, withRouter, useHistory } from "react-router-dom";
+import React, { useReducer, useEffect, useState } from 'react';
+import { Redirect, withRouter, useHistory } from 'react-router-dom';
 
 interface State<T> {
   value: T;
@@ -7,32 +7,32 @@ interface State<T> {
   wasTouched?: boolean;
 }
 
-type Action<T> = { type: "USER_INPUT"; value: T } | { type: "INPUT_BLUR" };
+type Action<T> = { type: 'USER_INPUT'; value: T } | { type: 'INPUT_BLUR' };
 
 const stringValueReducer = (state: State<string>, action: Action<string>): State<string> => {
-  if (action.type === "USER_INPUT") {
+  if (action.type === 'USER_INPUT') {
     return { value: action.value, isValid: action.value.trim().length >= 7, wasTouched: true };
   }
 
-  if (action.type === "INPUT_BLUR") {
+  if (action.type === 'INPUT_BLUR') {
     return { value: state.value, isValid: state.value.trim().length >= 7, wasTouched: true };
   }
 
-  return { value: "", isValid: false, wasTouched: true };
+  return { value: '', isValid: false, wasTouched: true };
 };
 
 const DiceRollSessionBuilder = () => {
   let history = useHistory();
 
   const sessionIdChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchSessionId({ type: "USER_INPUT", value: event.target.value });
+    dispatchSessionId({ type: 'USER_INPUT', value: event.target.value });
   };
 
-  const sessionIdBlurHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchSessionId({ type: "INPUT_BLUR" });
+  const sessionIdBlurHandler = (_: React.ChangeEvent<HTMLInputElement>) => {
+    dispatchSessionId({ type: 'INPUT_BLUR' });
   };
 
-  const joinSessionHandler = (event: React.MouseEvent) => {
+  const joinSessionHandler = (_: React.MouseEvent) => {
     history.push(`/dice/${sessionIdState.value}`);
   };
 
@@ -62,24 +62,24 @@ const DiceRollSessionBuilder = () => {
 
   return (
     <>
-      <form noValidate className="needs-validation">
-        <div className="form-row">
-          <div className="form-group col-md-4">
-            <label htmlFor="session">Session Id</label>
+      <form noValidate className='needs-validation'>
+        <div className='form-row'>
+          <div className='form-group col-md-4'>
+            <label htmlFor='session'>Session Id</label>
             <input
-              type="text"
-              id="session"
+              type='text'
+              id='session'
               value={sessionIdState.value}
               onChange={sessionIdChangeHandler}
               onBlur={sessionIdBlurHandler}
-              className={`form-control ${sessionIdState.wasTouched ? (sessionIdState.isValid === false ? "is-invalid" : "is-valid") : "is-valid"}`}
+              className={`form-control ${sessionIdState.wasTouched ? (sessionIdState.isValid === false ? 'is-invalid' : 'is-valid') : 'is-valid'}`}
             />
           </div>
         </div>
 
-        <div className="form-row">
-          <div className="col-md-4">
-            <button className="btn btn-primary" disabled={!formIsValid} onClick={joinSessionHandler}>
+        <div className='form-row'>
+          <div className='col-md-4'>
+            <button className='btn btn-primary' disabled={!formIsValid} onClick={joinSessionHandler}>
               Join Session
             </button>
           </div>

@@ -5,7 +5,7 @@ import Home from './Components/Home';
 import DiceRoll from './Components/DiceRoll/DiceRoll';
 import DiceRollSessionBuilder from './Components/DiceRoll/DiceRollSessionBuilder';
 
-import './custom.css'
+import './custom.css';
 
 export default () => (
     <Layout>

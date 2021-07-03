@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { match } from "react-router-dom";
-import { HubConnectionBuilder, HubConnection, HubConnectionState, LogLevel } from "@microsoft/signalr";
-import DiceRollForm from "./DiceRollForm";
-import DiceRollList from "./DiceRollList";
-import ConnectionState from "./ConnectionState";
+import React, { useState, useEffect } from 'react';
+import { match } from 'react-router-dom';
+import { HubConnectionBuilder, HubConnection, HubConnectionState, LogLevel } from '@microsoft/signalr';
+import DiceRollForm from './DiceRollForm';
+import DiceRollList from './DiceRollList';
+import ConnectionState from './ConnectionState';
 
 interface DiceRollParams {
   sessionId: string;
@@ -23,34 +23,34 @@ const DiceRoll = ({ match }: DiceRollProps) => {
   useEffect(() => {
     const connection = new HubConnectionBuilder()
       .configureLogging(LogLevel.Trace)
-      .withUrl("/hubs/dice")
+      .withUrl('/hubs/dice')
       .withAutomaticReconnect()
       .build();
 
     const startSuccess = () => {
-      setConnectionState(c => HubConnectionState.Connected);
+      setConnectionState(_ => HubConnectionState.Connected);
       joinSession();
     };
 
     const startFailed = () => {
-      setConnectionState(c => HubConnectionState.Disconnected);
+      setConnectionState(_ => HubConnectionState.Disconnected);
     };
 
     const joinSession = () => {
-      connection.send("joinSession", sessionId);
+      connection.send('joinSession', sessionId);
     };
 
     connection.onreconnected(function () {
       joinSession();
-      setConnectionState(c => HubConnectionState.Connected);
+      setConnectionState(_ => HubConnectionState.Connected);
     });
 
     connection.onreconnecting(function () {
-      setConnectionState(c => HubConnectionState.Reconnecting);
+      setConnectionState(_ => HubConnectionState.Reconnecting);
     });
 
     connection.onclose(function () {
-      setConnectionState(c => HubConnectionState.Disconnected);
+      setConnectionState(_ => HubConnectionState.Disconnected);
     });
 
     connection.start().then(startSuccess, startFailed);
@@ -60,7 +60,7 @@ const DiceRoll = ({ match }: DiceRollProps) => {
     return function cleanup() {
       connection.stop();
     };
-  }, []);
+  }, [sessionId]);
 
   return (
     <>
