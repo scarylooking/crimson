@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Transactions;
 using Dice.Models;
 using Dice.Services;
 using Dice.Services.Interfaces;
@@ -51,6 +52,11 @@ namespace Dice.Hubs
 
         public async Task Roll(string sessionId, string name, int dieCount, int faceCount)
         {
+            if (!IsRollRequestValid(sessionId, name, dieCount, faceCount))
+            {
+                return;
+            }
+
             var rollResult = _diceRollService.Roll(dieCount, faceCount);
 
             var response = new RollResponse
@@ -62,6 +68,15 @@ namespace Dice.Hubs
             };
 
             await Clients.Group(sessionId).SendAsync("diceRoll", JsonSerializer.Serialize(response));
+        }
+
+        private bool IsRollRequestValid(string sessionId, string name, int dieCount, int faceCount)
+        {
+            if (string.IsNullOrWhiteSpace(name) || name.Length > 50) return false;
+            if (string.IsNullOrWhiteSpace(sessionId)) return false;
+            if (!_diceRollService.IsRollValid(dieCount, faceCount)) return false;
+
+            return true;
         }
     }
 }

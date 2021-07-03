@@ -29,11 +29,11 @@ const diceFaceValueReducer = (state: State<number>, action: Action<number>): Sta
 
 const stringValueReducer = (state: State<string>, action: Action<string>): State<string> => {
   if (action.type === 'USER_INPUT') {
-    return { value: action.value, isValid: action.value.trim().length >= 1, wasTouched: true };
+    return { value: action.value, isValid: action.value.length >= 1 && action.value.length <= 50, wasTouched: true };
   }
 
   if (action.type === 'INPUT_BLUR') {
-    return { value: state.value, isValid: state.value.trim().length >= 1, wasTouched: true };
+    return { value: state.value, isValid: state.value.length >= 1 && state.value.length <= 50, wasTouched: true };
   }
 
   return { value: '', isValid: false, wasTouched: true };

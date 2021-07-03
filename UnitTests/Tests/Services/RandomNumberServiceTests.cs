@@ -20,7 +20,7 @@ namespace UnitTests.Tests.Services
         }
 
         [Theory]
-        [ClassData(typeof(DieFaceGenerator))]
+        [ClassData(typeof(ValidDieFaceGenerator))]
         public void Next_GeneratesNumbersWithinRange(int numberOfFaces)
         {
             for (var i = 0; i < 10000; i++)
@@ -32,7 +32,7 @@ namespace UnitTests.Tests.Services
         }
 
         [Theory]
-        [ClassData(typeof(DieFaceGenerator))]
+        [ClassData(typeof(ValidDieFaceGenerator))]
         public void Next_GeneratesNumbersDistributedAcrossTheRange(int numberOfFaces)
         {
             var rolls = new Dictionary<int, int>();

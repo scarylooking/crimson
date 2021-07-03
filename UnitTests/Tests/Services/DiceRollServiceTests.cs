@@ -1,4 +1,5 @@
-﻿using Dice.Services;
+﻿using System.Security.Cryptography;
+using Dice.Services;
 using Dice.Services.Interfaces;
 using Moq;
 using UnitTests.DataGenerators;
@@ -23,35 +24,54 @@ namespace UnitTests.Tests.Services
         }
 
         [Theory]
-        [ClassData(typeof(NumberOfDieGenerator))]
-        public void Roll_CallsRandomNumberService_OnceForEachRequestedRoll(int numberOfDie)
+        [ClassData(typeof(ValidDieCountGenerator))]
+        public void Roll_CallsRandomNumberService_OnceForEachRequestedRoll(int dieCount)
         {
-            _ = _service.Roll(numberOfDie, 6);
+            _ = _service.Roll(dieCount, 6);
 
-            _randomNumberService.Verify(x => x.Next(It.IsAny<int>(),It.IsAny<int>()), Times.Exactly(numberOfDie));
+            _randomNumberService.Verify(x => x.Next(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(dieCount));
         }
 
         [Theory]
-        [ClassData(typeof(NumberOfDieGenerator))]
-        public void Roll_ReturnsTheCorrectNumberOfRolls(int numberOfDie)
+        [ClassData(typeof(ValidDieCountGenerator))]
+        public void Roll_ReturnsTheCorrectNumberOfRolls(int dieCount)
         {
-            var result = _service.Roll(numberOfDie, 6);
+            var result = _service.Roll(dieCount, 6);
 
-            Assert.Equal(numberOfDie, result.Count);
+            Assert.Equal(dieCount, result.Count);
         }
 
 
         [Theory]
-        [ClassData(typeof(DieFaceGenerator))]
-        public void Roll_CallsRandomNumberService_WithTheCorrectRangeForTheNumberOfFaces(int numberOfFaces)
+        [ClassData(typeof(ValidDieFaceGenerator))]
+        public void Roll_CallsRandomNumberService_WithTheCorrectRangeForFaceCount(int faceCount)
         {
             var expectedLowerBound = 1;
-            var expectedUpperBound = numberOfFaces;
+            var expectedUpperBound = faceCount;
 
-            _ = _service.Roll(1, numberOfFaces);
+            _ = _service.Roll(1, faceCount);
 
-            _randomNumberService.Verify(x => x.Next(expectedLowerBound,expectedUpperBound), Times.Once);
+            _randomNumberService.Verify(x => x.Next(expectedLowerBound, expectedUpperBound), Times.Once);
         }
+
+        [Theory]
+        [ClassData(typeof(ValidRollGenerator))]
+        public void IsValid_AcceptsValidCombinationsOfDieAndFaces(int dieCount, int faceCount)
+        {
+            var result = _service.IsRollValid(dieCount, faceCount);
+
+            Assert.True(result);
+        }
+
+        [Theory]
+        [ClassData(typeof(InvalidRollGenerator))]
+        public void IsValid_RejectsInvalidCombinationsOfDieAndFaces(int dieCount, int faceCount)
+        {
+            var result = _service.IsRollValid(dieCount, faceCount);
+
+            Assert.False(result);
+        }
+
 
     }
 }
