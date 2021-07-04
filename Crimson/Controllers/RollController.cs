@@ -22,21 +22,5 @@ namespace Crimson.Controllers
             _messageHub = messageHub;
             _diceRollService = diceRollService;
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Roll(RollRequest request)
-        {
-            var rollResult = _diceRollService.Roll(request.DieCount, request.FaceCount);
-
-            var response = new RollResponse
-            {
-                Name = request.Name,
-                Roll = rollResult.ToArray()
-            };
-            
-            await _messageHub.Clients.All.SendAsync("sendNewDiceRoll", JsonSerializer.Serialize(response));
-
-            return Ok();
-        }
     }
 }
