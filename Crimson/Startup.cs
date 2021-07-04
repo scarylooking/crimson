@@ -1,22 +1,15 @@
+using Crimson.Hubs;
+using Crimson.Services;
+using Crimson.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Dice.Hubs;
-using Dice.Services;
-using Dice.Services.Interfaces;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
-namespace Dice
+namespace Crimson
 {
     public class Startup
     {

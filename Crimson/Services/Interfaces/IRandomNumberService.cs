@@ -1,4 +1,4 @@
-﻿namespace Dice.Services.Interfaces
+﻿namespace Crimson.Services.Interfaces
 {
     public interface IRandomNumberService
     {

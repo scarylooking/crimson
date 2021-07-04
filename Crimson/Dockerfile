@@ -15,14 +15,14 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 #ENV BuildingDocker true
 WORKDIR /src
 COPY . .
-RUN dotnet restore "Dice.csproj"
-RUN dotnet build "Dice.csproj" -c Release -o /app
+RUN dotnet restore "Crimson.csproj"
+RUN dotnet build "Crimson.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "Dice.csproj" -c Release -o /app
+RUN dotnet publish "Crimson.csproj" -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
 COPY --from=build-node /client/build ./ClientApp/build
-ENTRYPOINT ["dotnet", "Dice.dll"]
+ENTRYPOINT ["dotnet", "Crimson.dll"]

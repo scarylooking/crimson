@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Security.Cryptography;
-using Dice.Services.Interfaces;
+using Crimson.Services.Interfaces;
 
-namespace Dice.Services
+namespace Crimson.Services
 {
     public sealed class RandomNumberService : IDisposable, IRandomNumberService
     {

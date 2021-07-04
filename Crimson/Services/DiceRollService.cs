@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Dice.Services.Interfaces;
+using Crimson.Services.Interfaces;
 
-namespace Dice.Services
+namespace Crimson.Services
 {
 
     public class DiceRollService : IDiceRollService

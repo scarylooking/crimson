@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
-using Dice.Services;
-using Dice.Services.Interfaces;
+using Crimson.Services;
+using Crimson.Services.Interfaces;
 using Moq;
 using UnitTests.DataGenerators;
 using Xunit;

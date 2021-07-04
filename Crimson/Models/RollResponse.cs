@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace Dice.Models
+namespace Crimson.Models
 {
     public class RollResponse
     {

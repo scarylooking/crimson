@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dice\Dice.csproj" />
+    <ProjectReference Include="..\crimson\Crimson.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Dice.Services.Interfaces
+namespace Crimson.Services.Interfaces
 {
     public interface IDiceRollService
     {

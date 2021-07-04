@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Dice.Hubs;
-using Dice.Models;
-using Dice.Services;
-using Dice.Services.Interfaces;
+using Crimson.Hubs;
+using Crimson.Models;
+using Crimson.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Dice.Controllers
+namespace Crimson.Controllers
 {
     [Route("/api/roll")]
     [ApiController]

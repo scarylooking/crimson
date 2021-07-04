@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Transactions;
-using Dice.Models;
-using Dice.Services;
-using Dice.Services.Interfaces;
+using Crimson.Models;
+using Crimson.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Dice.Hubs
+namespace Crimson.Hubs
 {
     public class GroupJoinMessage
     {
