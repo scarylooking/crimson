@@ -6,5 +6,6 @@ namespace Crimson.Hubs
     public interface IDiceRollClient
     {
         Task Roll(RollMessage message);
+        Task RollRejected(RollMessage message);
     }
 }

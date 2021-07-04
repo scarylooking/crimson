@@ -28,11 +28,18 @@ namespace Crimson.Hubs
 
         public async Task Roll(string sessionId, string name, int dieCount, int faceCount)
         {
-            if (!IsRollRequestValid(sessionId, name, dieCount, faceCount))
+            if (IsRollRequestValid(sessionId, name, dieCount, faceCount))
             {
-                return;
+                await SendRoll(sessionId, name, dieCount, faceCount);
             }
+            else
+            {
+                await RejectRoll(name, dieCount, faceCount);
+            }
+        }
 
+        private async Task SendRoll(string sessionId, string name, int dieCount, int faceCount)
+        {
             var rollResult = _diceRollService.Roll(dieCount, faceCount);
 
             var response = new RollMessage
@@ -44,6 +51,16 @@ namespace Crimson.Hubs
             };
 
             await Clients.Group(sessionId).Roll(response);
+        }
+
+        private async Task RejectRoll(string name, int dieCount, int faceCount)
+        {
+            await Clients.Caller.RollRejected(new RollMessage
+            {
+                Name = name,
+                Die = dieCount,
+                Faces = faceCount
+            });
         }
 
         private bool IsRollRequestValid(string sessionId, string name, int dieCount, int faceCount)
