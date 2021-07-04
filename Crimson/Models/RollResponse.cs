@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace Crimson.Models
 {
-    public class RollResponse
+    public class RollMessage
     {
-        public RollResponse()
+        public RollMessage()
         {
             Id = Guid.NewGuid();
         }

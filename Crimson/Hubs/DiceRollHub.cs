@@ -7,17 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Crimson.Hubs
 {
-    public class GroupJoinMessage
-    {
-        public string Name { get; set; }
-    }
-
-    public class GroupLeaveMessage
-    {
-        public string Name { get; set; }
-    }
-
-    public class DiceRollHub : Hub
+    public class DiceRollHub : Hub<IDiceRollClient>
     {
         private readonly IDiceRollService _diceRollService;
 
@@ -29,21 +19,11 @@ namespace Crimson.Hubs
         public async Task JoinSession(string sessionId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, sessionId);
-
-
-            await Clients.Group(sessionId).SendAsync("diceJoin");
         }
 
-        public async Task LeaveSession(string name, string sessionId)
+        public async Task LeaveSession(string sessionId)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, sessionId);
-
-            var response = new GroupLeaveMessage
-            {
-                Name = name
-            };
-
-            await Clients.Group(sessionId).SendAsync("diceJoin", JsonSerializer.Serialize(response));
         }
 
         public async Task Roll(string sessionId, string name, int dieCount, int faceCount)
@@ -55,7 +35,7 @@ namespace Crimson.Hubs
 
             var rollResult = _diceRollService.Roll(dieCount, faceCount);
 
-            var response = new RollResponse
+            var response = new RollMessage
             {
                 Name = name,
                 Roll = rollResult.ToArray(),
@@ -63,7 +43,7 @@ namespace Crimson.Hubs
                 Faces = faceCount
             };
 
-            await Clients.Group(sessionId).SendAsync("diceRoll", JsonSerializer.Serialize(response));
+            await Clients.Group(sessionId).Roll(response);
         }
 
         private bool IsRollRequestValid(string sessionId, string name, int dieCount, int faceCount)

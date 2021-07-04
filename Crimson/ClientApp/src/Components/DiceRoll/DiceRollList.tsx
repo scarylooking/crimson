@@ -10,14 +10,13 @@ const DiceRollList = ({ connection }: DiceRollListProps) => {
   const [itemList, setItemList] = useState<Array<DiceRollResponse>>([]);
 
   useEffect(() => {
-    connection.on('diceRoll', (response) => {
+    connection.on('roll', (response) => {
       setItemList((items) => {
         while (items.length > 10) {
           var item = items.pop();
           console.debug('Evicting an item from the list', item);
         }
-
-        return [JSON.parse(response), ...items];
+        return [response, ...items];
       });
     });
   }, [connection]);
