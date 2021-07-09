@@ -17,7 +17,7 @@ namespace Crimson.Models
         public int Die { get; set; }
 
         [JsonPropertyName("faces")]
-        public int Faces { get; set; }
+        public string Faces { get; set; }
 
         [JsonPropertyName("roll")]
         public int[] Roll { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Crimson.Models;
@@ -26,7 +27,7 @@ namespace Crimson.Hubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, sessionId);
         }
 
-        public async Task Roll(string sessionId, string name, int dieCount, int faceCount)
+        public async Task Roll(string sessionId, string name, int dieCount, string faceCount)
         {
             if (IsRollRequestValid(sessionId, name, dieCount, faceCount))
             {
@@ -38,10 +39,12 @@ namespace Crimson.Hubs
             }
         }
 
-        private async Task SendRoll(string sessionId, string name, int dieCount, int faceCount)
+        private async Task SendRoll(string sessionId, string name, int dieCount, string faceCount)
         {
-            var rollResult = _diceRollService.Roll(dieCount, faceCount);
-
+            var rollResult = int.TryParse(faceCount, out var faceResult) 
+                ? _diceRollService.Roll(dieCount, faceResult) 
+                : _diceRollService.RollPercentile(dieCount);
+            
             var response = new RollMessage
             {
                 Name = name,
@@ -53,7 +56,7 @@ namespace Crimson.Hubs
             await Clients.Group(sessionId).Roll(response);
         }
 
-        private async Task RejectRoll(string name, int dieCount, int faceCount)
+        private async Task RejectRoll(string name, int dieCount, string faceCount)
         {
             await Clients.Caller.RollRejected(new RollMessage
             {
@@ -63,7 +66,7 @@ namespace Crimson.Hubs
             });
         }
 
-        private bool IsRollRequestValid(string sessionId, string name, int dieCount, int faceCount)
+        private bool IsRollRequestValid(string sessionId, string name, int dieCount, string faceCount)
         {
             if (string.IsNullOrWhiteSpace(name) || name.Length > 50) return false;
             if (string.IsNullOrWhiteSpace(sessionId)) return false;

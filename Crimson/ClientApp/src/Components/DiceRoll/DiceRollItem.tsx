@@ -9,12 +9,23 @@ interface DiceRollItemProps {
 
 const DiceRollItem = ({ roll, isFirst }: DiceRollItemProps) => {
 
-  const GetBadgeType = (dieFaces: number, roll: number) => {
-    if (roll === 1) {
+  const GetBadgeType = (dieFaces: number | string, roll: number) => {
+
+    if (dieFaces === '%') {
+      if (roll === 0) {
+        return 'badge-danger';
+      }
+    }
+    else if (roll === 1) {
       return 'badge-danger';
     }
 
-    if (roll === dieFaces) {
+    if (dieFaces === '%') {
+      if (roll === 100) {
+        return 'badge-success';
+      }
+    }
+    else if (roll === +dieFaces) {
       return 'badge-success';
     }
 

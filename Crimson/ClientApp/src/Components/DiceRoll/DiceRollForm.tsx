@@ -15,16 +15,49 @@ interface State<T> {
 
 type Action<T> = { type: 'USER_INPUT'; value: T } | { type: 'INPUT_BLUR' };
 
-const diceFaceValueReducer = (state: State<number>, action: Action<number>): State<number> => {
+const dieCountValueReducer = (state: State<number>, action: Action<number>): State<number> => {
   if (action.type === 'USER_INPUT') {
-    return { value: action.value, isValid: action.value >= 1 && action.value <= 100, wasTouched: true };
+    return {
+      value: action.value,
+      isValid: action.value >= 1 && action.value <= 100,
+      wasTouched: true
+    };
   }
 
   if (action.type === 'INPUT_BLUR') {
-    return { value: +state.value, isValid: state.value >= 1 && state.value <= 100, wasTouched: true };
+    return {
+      value: +state.value,
+      isValid: state.value >= 1 && state.value <= 100,
+      wasTouched: true
+    };
   }
 
-  return { value: 6, isValid: false, wasTouched: true };
+  return {
+    value: 1,
+    isValid: false,
+    wasTouched: true
+  };
+};
+
+const faceCountValueReducer = (state: State<string>, action: Action<string>): State<string> => {
+
+  if (action.type === 'USER_INPUT') {
+    return {
+      value: action.value,
+      isValid: action.value === '%' || +action.value >= 1 && +action.value <= 100,
+      wasTouched: true
+    };
+  }
+
+  if (action.type === 'INPUT_BLUR') {
+    return {
+      value: state.value,
+      isValid: state.value === '%' || +state.value >= 1 && +state.value <= 100,
+      wasTouched: true
+    };
+  }
+
+  return { value: '10', isValid: false, wasTouched: true };
 };
 
 const stringValueReducer = (state: State<string>, action: Action<string>): State<string> => {
@@ -42,8 +75,8 @@ const stringValueReducer = (state: State<string>, action: Action<string>): State
 const DiceRollForm = ({ connection, sessionId, connectionState }: DiceRollFormProps) => {
   const [rollIsValid, setRollIsValid] = useState(false);
 
-  const [dieCountState, dispatchDieCount] = useReducer(diceFaceValueReducer, { value: 1, isValid: true, wasTouched: false });
-  const [faceCountState, dispatchFaceCount] = useReducer(diceFaceValueReducer, { value: 6, isValid: true, wasTouched: false });
+  const [dieCountState, dispatchDieCount] = useReducer(dieCountValueReducer, { value: 1, isValid: true, wasTouched: false });
+  const [faceCountState, dispatchFaceCount] = useReducer(faceCountValueReducer, { value: '10', isValid: true, wasTouched: false });
   const [nameState, dispatchName] = useReducer(stringValueReducer, { value: '', isValid: false, wasTouched: false });
 
   const { isValid: dieCountIsValid } = dieCountState;
@@ -59,7 +92,7 @@ const DiceRollForm = ({ connection, sessionId, connectionState }: DiceRollFormPr
   };
 
   const faceCountChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchFaceCount({ type: 'USER_INPUT', value: +event.target.value });
+    dispatchFaceCount({ type: 'USER_INPUT', value: event.target.value });
   };
 
   const faceCountBlurHandler = (_: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +177,6 @@ const DiceRollForm = ({ connection, sessionId, connectionState }: DiceRollFormPr
                 <div className='input-group-text'>d</div>
               </div>
               <input
-                type='number'
                 id='faceCount'
                 placeholder='10'
                 min='1'

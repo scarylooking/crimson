@@ -7,14 +7,23 @@ namespace UnitTests.DataGenerators
     {
         private readonly List<object[]> _data = new()
         {
-            new object[] { 0, 1 },
-            new object[] { 1, 0 },
-            new object[] { -1, 1 },
-            new object[] { 1, -1 },
-            new object[] { 101, 1 },
-            new object[] { 1, 101 },
-            new object[] { 1000, 1 },
-            new object[] { 1, 1000 }
+            new object[] { 0, "1" },
+            new object[] { 0, "%" },
+            new object[] { 1, "0" },
+            new object[] { -1, "1" },
+            new object[] { -1, "%" },
+            new object[] { 1, "-1" },
+            new object[] { 101, "1" },
+            new object[] { 101, "%" },
+            new object[] { 1, "101" },
+            new object[] { 1000, "1" },
+            new object[] { 1000, "%" },
+            new object[] { 1, "1000" },
+            new object[] { 1, "%%" },
+            new object[] { 1, " %" },
+            new object[] { 1, "" },
+            new object[] { 1, "% " },
+            new object[] { 1, "ALPACA" },
         };
 
         public IEnumerator<object[]> GetEnumerator() => _data.GetEnumerator();
