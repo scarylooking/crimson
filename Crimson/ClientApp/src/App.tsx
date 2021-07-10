@@ -7,10 +7,12 @@ import DiceRollSessionBuilder from './Components/DiceRoll/DiceRollSessionBuilder
 
 import './custom.css';
 
-export default () => (
-    <Layout>
-        <Route exact path='/' component={Home} />
-        <Route exact path='/dice' component={DiceRollSessionBuilder} />
-        <Route exact path='/dice/:sessionId' component={DiceRoll} />
-    </Layout>
+const App: React.FunctionComponent = () => (
+  <Layout>
+    <Route exact path="/" component={Home} />
+    <Route exact path="/dice" component={DiceRollSessionBuilder} />
+    <Route exact path="/dice/:sessionId" component={DiceRoll} />
+  </Layout>
 );
+
+export default App;

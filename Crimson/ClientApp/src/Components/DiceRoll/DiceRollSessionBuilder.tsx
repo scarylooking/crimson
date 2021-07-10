@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect, useState } from 'react';
-import { Redirect, withRouter, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 interface State<T> {
   value: T;
@@ -21,18 +21,18 @@ const stringValueReducer = (state: State<string>, action: Action<string>): State
   return { value: '', isValid: false, wasTouched: true };
 };
 
-const DiceRollSessionBuilder = () => {
-  let history = useHistory();
+const DiceRollSessionBuilder: React.FunctionComponent = () => {
+  const history = useHistory();
 
   const sessionIdChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatchSessionId({ type: 'USER_INPUT', value: event.target.value });
   };
 
-  const sessionIdBlurHandler = (_: React.ChangeEvent<HTMLInputElement>) => {
+  const sessionIdBlurHandler = () => {
     dispatchSessionId({ type: 'INPUT_BLUR' });
   };
 
-  const joinSessionHandler = (_: React.MouseEvent) => {
+  const joinSessionHandler = () => {
     history.push(`/dice/${sessionIdState.value}`);
   };
 
@@ -62,13 +62,13 @@ const DiceRollSessionBuilder = () => {
 
   return (
     <>
-      <form noValidate className='needs-validation'>
-        <div className='form-row'>
-          <div className='form-group col-md-4'>
-            <label htmlFor='session'>Session Id</label>
+      <form noValidate className="needs-validation">
+        <div className="form-row">
+          <div className="form-group col-md-4">
+            <label htmlFor="session">Session Id</label>
             <input
-              type='text'
-              id='session'
+              type="text"
+              id="session"
               value={sessionIdState.value}
               onChange={sessionIdChangeHandler}
               onBlur={sessionIdBlurHandler}
@@ -77,9 +77,9 @@ const DiceRollSessionBuilder = () => {
           </div>
         </div>
 
-        <div className='form-row'>
-          <div className='col-md-4'>
-            <button className='btn btn-primary' disabled={!formIsValid} onClick={joinSessionHandler}>
+        <div className="form-row">
+          <div className="col-md-4">
+            <button className="btn btn-primary" disabled={!formIsValid} onClick={joinSessionHandler}>
               Join Session
             </button>
           </div>
