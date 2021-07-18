@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink,
-} from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap'
+import { Navbar, Nav, Container } from 'react-bootstrap';
 import './NavMenu.css';
 
 const NavMenu: React.FunctionComponent = () => {
@@ -12,20 +10,20 @@ const NavMenu: React.FunctionComponent = () => {
 
   return (
     <header>
-      <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" light>
+      <Navbar collapseOnSelect bg="light" expand="lg">
         <Container>
-          <NavbarBrand tag={Link} to="/">ToolBox</NavbarBrand>
-          <NavbarToggler onClick={toggle} className="mr-2" />
-          <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={isOpen} navbar>
-            <ul className="navbar-nav flex-grow">
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/dice">Dice</NavLink>
-              </NavItem>
-            </ul>
-          </Collapse>
+          <Navbar.Brand href="#home">Crimson</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <LinkContainer to="/">
+                <Nav.Link className="text-dark">Home</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/dice">
+                <Nav.Link className="text-dark">Dice</Nav.Link>
+              </LinkContainer>
+            </Nav>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
     </header>
