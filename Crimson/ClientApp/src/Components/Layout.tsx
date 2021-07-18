@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Container } from 'react-bootstrap';
 import NavMenu from './NavMenu/NavMenu';
 
 type Props = {
@@ -8,9 +9,9 @@ type Props = {
 const Layout: React.FunctionComponent<Props> = ({ children }: Props) => (
   <>
     <NavMenu />
-    <div className="container">
+    <Container>
       {children}
-    </div>
+    </Container>
   </>
 );
 
